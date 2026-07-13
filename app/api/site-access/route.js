@@ -4,7 +4,7 @@ export async function POST(request) {
   const form = await request.formData();
   const password = form.get('password');
   const requestedPath = form.get('next');
-  const next = typeof requestedPath === 'string' && requestedPath.startsWith('/') ? requestedPath : '/index.html';
+  const next = typeof requestedPath === 'string' && requestedPath.startsWith('/') && requestedPath !== '/' ? requestedPath : '/index.html';
 
   if (!process.env.SITE_PASSWORD || password !== process.env.SITE_PASSWORD) {
     const url = new URL('/access', request.url);
