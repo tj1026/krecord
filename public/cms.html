@@ -46,6 +46,10 @@ groups.splice(7,0,['SEO & AI discovery','Search, social-preview, and AI-readable
   ['seo-social-image','Social sharing image','','image'],
   ['ai-summary','AI-readable site summary','The Kiley Record is a public-record briefing about Kevin Kiley’s political record, including his support for Trump’s false 2020-election claims, positions on health care and abortion rights, and continued alignment with Trump and the MAGA-led GOP.','long']
 ]]);
+groups[8][2].push(
+  ['closing-button-label','Red button text','Learn more','short'],
+  ['closing-button-link','Red button link','','url']
+);
 const form=document.querySelector('#editor'),status=document.querySelector('#status'),passwordInput=document.querySelector('#cms-password');
 passwordInput.value=sessionStorage.getItem('kiley-record-cms-password')||'';
 passwordInput.addEventListener('input',()=>sessionStorage.setItem('kiley-record-cms-password',passwordInput.value));
