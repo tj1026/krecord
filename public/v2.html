@@ -24,7 +24,6 @@
   --dim:rgba(241,236,221,.62);
   --faint:rgba(241,236,221,.38);
   --line:rgba(241,236,221,.14);
-  --mark:#FFE24A;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -36,8 +35,6 @@ a:hover{text-decoration:underline}
 .type{font-family:'Special Elite',monospace}
 .disp{font-family:'Oswald',sans-serif;text-transform:uppercase}
 .wrap{max-width:1080px;margin:0 auto;padding:0 24px;position:relative;z-index:3}
-mark,.add-copy{background:var(--mark);color:#211d05;padding:.08em .3em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-.add-note{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--mark);color:#211d05;padding:3px 8px;font-weight:600;margin-bottom:8px}
 
 /* reveal animation */
 .rv{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
@@ -157,7 +154,6 @@ section{padding:clamp(56px,9vh,96px) 0;border-bottom:1px solid var(--line);posit
 
 /* closing */
 .closing{border-bottom:none;text-align:center;padding:clamp(80px,12vh,130px) 24px;position:relative;overflow:hidden}
-.closing::before{content:"CASE OPEN";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-9deg);font-family:'Special Elite',monospace;font-size:clamp(80px,16vw,190px);letter-spacing:.1em;color:transparent;-webkit-text-stroke:1px rgba(196,19,42,.22);white-space:nowrap;pointer-events:none}
 .closing h2{font-family:'Oswald',sans-serif;text-transform:uppercase;font-weight:600;font-size:clamp(34px,6vw,64px);line-height:1.02;position:relative}
 .closing h2 span{color:var(--gold)}
 .closing p{color:var(--dim);margin:20px auto 36px;max-width:440px;font-size:15px;position:relative}
@@ -192,7 +188,7 @@ dialog::backdrop{background:rgba(5,6,8,.8)}
 </head>
 <body>
 
-<div class="topbar"><div class="wrap"><div>File: <b data-cms="publication">The Kiley Record</b></div><div><span class="add-copy" title="New label — decorative, edit or remove">Opposition file · Public sources only</span></div></div></div>
+<div class="topbar"><div class="wrap"><div>File: <b data-cms="publication">The Kiley Record</b></div><div><span data-cms="alt-topbar-note">Opposition file · Public sources only</span></div></div></div>
 
 <div class="ticker"><div class="inner" aria-label="Key record">
   <span data-cms="ticker-one">Kiley backed Trump’s Big Lie</span><span class="dot" aria-hidden="true">■</span><span data-cms="ticker-two">Voted with Trump’s recommendations</span><span class="dot" aria-hidden="true">■</span><span data-cms="ticker-three">Supported cuts to health care and food assistance</span><span class="dot" aria-hidden="true">■</span><span data-cms="ticker-four">Opposed abortion-rights protections</span><span class="dot" aria-hidden="true">■</span>
@@ -298,14 +294,15 @@ dialog::backdrop{background:rgba(5,6,8,.8)}
   </div>
 </dialog>
 
-<nav class="vswitch" aria-label="Design versions"><span>Design</span><a href="/index.html">1</a><a href="/v2.html" class="on" aria-current="page">2</a><a href="/v3.html">3</a><a href="/v4.html">4</a></nav>
+<nav class="vswitch" aria-label="Design versions" id="vswitch"><span>Design</span><a href="/index.html" data-design-toggle="1">1</a><a href="/v2.html" class="on" aria-current="page" data-design-toggle="2">2</a><a href="/v3.html" data-design-toggle="3">3</a><a href="/v4.html" data-design-toggle="4">4</a></nav>
 
 <script>
 const cmsStorageKey='kiley-record-content-v1';
 let sharedContent={};
 function setMeta(selector,content){if(!content)return;let tag=document.head.querySelector(selector);if(!tag){tag=document.createElement('meta');const match=selector.match(/^meta\[([^=]+)=\"([^\"]+)\"\]$/);if(!match)return;tag.setAttribute(match[1],match[2]);document.head.append(tag)}tag.content=content}
 function applySeo(content){const title=content['seo-title'],description=content['seo-description'],keywords=content['seo-keywords'],socialImage=content['seo-social-image'];if(title){document.title=title;setMeta('meta[property="og:title"]',title)}if(description){setMeta('meta[name="description"]',description);setMeta('meta[property="og:description"]',description)}if(keywords)setMeta('meta[name="keywords"]',keywords);if(socialImage){setMeta('meta[property="og:image"]',socialImage);setMeta('meta[name="twitter:image"]',socialImage)}}
-function applyContent(content){if(!content||typeof content!=='object')return;document.querySelectorAll('[data-cms]').forEach(el=>{const value=content[el.dataset.cms];if(value!==undefined)el.innerHTML=value});document.querySelectorAll('[data-cms-link]').forEach(el=>{const value=content[el.dataset.cmsLink];if(value)el.href=value});document.querySelectorAll('[data-cms-image]').forEach(img=>{const value=content[img.dataset.cmsImage];if(value)img.src=value});document.querySelectorAll('[data-score-bar]').forEach(bar=>{const value=parseFloat(content[bar.dataset.scoreBar]);if(!Number.isNaN(value))bar.style.setProperty('--w',Math.max(0,Math.min(100,value))+'%')});document.querySelectorAll('[data-timeline-card]').forEach(card=>{card.classList.toggle('hot',content['timeline-highlight']?card.dataset.timelineCard===content['timeline-highlight']:card.classList.contains('hot'));const url=content['timeline-'+card.dataset.timelineCard+'-link'];if(url&&!card.dataset.linked){card.dataset.linked='true';card.classList.add('has-link');card.tabIndex=0;card.setAttribute('role','link');card.setAttribute('aria-label','Open timeline source');const openLink=()=>window.open(url,'_blank','noopener');card.addEventListener('click',openLink);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openLink()}})}});applySeo(content)}
+function applyDesignVisibility(content){if(!content)return;const nav=document.querySelector('#vswitch');if(!nav)return;let visible=0;nav.querySelectorAll('a[data-design-toggle]').forEach(a=>{const hidden=content['design-'+a.dataset.designToggle+'-visibility']==='hide';a.style.display=hidden?'none':'';if(!hidden)visible++});nav.style.display=visible>1?'':'none'}
+function applyContent(content){if(!content||typeof content!=='object')return;document.querySelectorAll('[data-cms]').forEach(el=>{const value=content[el.dataset.cms];if(value!==undefined)el.innerHTML=value});document.querySelectorAll('[data-cms-link]').forEach(el=>{const value=content[el.dataset.cmsLink];if(value)el.href=value});document.querySelectorAll('[data-cms-image]').forEach(img=>{const value=content[img.dataset.cmsImage];if(value)img.src=value});document.querySelectorAll('[data-score-bar]').forEach(bar=>{const value=parseFloat(content[bar.dataset.scoreBar]);if(!Number.isNaN(value))bar.style.setProperty('--w',Math.max(0,Math.min(100,value))+'%')});document.querySelectorAll('[data-timeline-card]').forEach(card=>{card.classList.toggle('hot',content['timeline-highlight']?card.dataset.timelineCard===content['timeline-highlight']:card.classList.contains('hot'));const url=content['timeline-'+card.dataset.timelineCard+'-link'];if(url&&!card.dataset.linked){card.dataset.linked='true';card.classList.add('has-link');card.tabIndex=0;card.setAttribute('role','link');card.setAttribute('aria-label','Open timeline source');const openLink=()=>window.open(url,'_blank','noopener');card.addEventListener('click',openLink);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openLink()}})}});applySeo(content);applyDesignVisibility(content)}
 try{applyContent(JSON.parse(localStorage.getItem(cmsStorageKey)||'{}'))}catch(e){}
 async function loadPublishedContent(attempt=0){try{const response=await fetch('/api/content',{cache:'no-store'});const data=response.ok?await response.json():null;if(data&&data.content){sharedContent=data.content;applyContent(sharedContent);return}}catch{}if(attempt<2)setTimeout(()=>loadPublishedContent(attempt+1),350)}
 loadPublishedContent();

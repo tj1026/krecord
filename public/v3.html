@@ -97,7 +97,7 @@ section{padding:clamp(64px,10vh,110px) 0}
 .score{background:var(--ink);color:var(--cream)}
 .score .shead h2{color:var(--cream)}
 .score .shead::after{background:var(--gold)}
-.score-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(240px,.6fr);gap:clamp(40px,6vw,90px);align-items:center}
+.score-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.85fr);gap:clamp(40px,6vw,90px);align-items:center}
 .bigfig .row{padding:26px 0;border-bottom:1px solid rgba(250,246,238,.16)}
 .bigfig .row:first-child{border-top:1px solid rgba(250,246,238,.16)}
 .bigfig .top{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap}
@@ -110,9 +110,9 @@ section{padding:clamp(64px,10vh,110px) 0}
 .bigfig .row.dim .sbar i{background:rgba(250,246,238,.5)}
 .score-grid.in .sbar i{width:var(--w)}
 .score-photo{margin:0}
-.score-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 30%;filter:grayscale(.85) contrast(1.06)}
+.score-photo img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 30%;filter:grayscale(.85) contrast(1.06)}
 .score-photo figcaption{color:rgba(250,246,238,.55);border-top:1px solid rgba(250,246,238,.2);padding-top:10px}
-@media(max-width:820px){.score-grid{grid-template-columns:1fr}.score-photo{max-width:380px}}
+@media(max-width:820px){.score-grid{grid-template-columns:1fr}.score-photo{max-width:460px;margin:0 auto}}
 
 /* pull quote */
 .pull{padding:clamp(70px,11vh,120px) 26px;text-align:center}
@@ -224,8 +224,8 @@ dialog::backdrop{background:rgba(28,25,20,.6)}
 </section>
 
 <div class="pull rv">
-  <blockquote><span class="add-copy" title="New copy — placeholder pull quote; replace with an approved line or quotation">A label changed on a form. Nothing changed in the votes.</span></blockquote>
-  <div class="attr"><span class="add-copy" title="New copy — attribution needed">Attribution or source to be added</span></div>
+  <blockquote data-cms="alt-pull-quote">A label changed on a form. Nothing changed in the votes.</blockquote>
+  <div class="attr add-copy" id="pull-attr" title="Needs a source or attribution before publishing">Attribution or source to be added</div>
 </div>
 
 <section id="context" class="record">
@@ -279,14 +279,16 @@ dialog::backdrop{background:rgba(28,25,20,.6)}
   </div>
 </dialog>
 
-<nav class="vswitch" aria-label="Design versions"><span>Design</span><a href="/index.html">1</a><a href="/v2.html">2</a><a href="/v3.html" class="on" aria-current="page">3</a><a href="/v4.html">4</a></nav>
+<nav class="vswitch" aria-label="Design versions" id="vswitch"><span>Design</span><a href="/index.html" data-design-toggle="1">1</a><a href="/v2.html" data-design-toggle="2">2</a><a href="/v3.html" class="on" aria-current="page" data-design-toggle="3">3</a><a href="/v4.html" data-design-toggle="4">4</a></nav>
 
 <script>
 const cmsStorageKey='kiley-record-content-v1';
 let sharedContent={};
 function setMeta(selector,content){if(!content)return;let tag=document.head.querySelector(selector);if(!tag){tag=document.createElement('meta');const match=selector.match(/^meta\[([^=]+)=\"([^\"]+)\"\]$/);if(!match)return;tag.setAttribute(match[1],match[2]);document.head.append(tag)}tag.content=content}
 function applySeo(content){const title=content['seo-title'],description=content['seo-description'],keywords=content['seo-keywords'],socialImage=content['seo-social-image'];if(title){document.title=title;setMeta('meta[property="og:title"]',title)}if(description){setMeta('meta[name="description"]',description);setMeta('meta[property="og:description"]',description)}if(keywords)setMeta('meta[name="keywords"]',keywords);if(socialImage){setMeta('meta[property="og:image"]',socialImage);setMeta('meta[name="twitter:image"]',socialImage)}}
-function applyContent(content){if(!content||typeof content!=='object')return;document.querySelectorAll('[data-cms]').forEach(el=>{const value=content[el.dataset.cms];if(value!==undefined)el.innerHTML=value});document.querySelectorAll('[data-cms-link]').forEach(el=>{const value=content[el.dataset.cmsLink];if(value)el.href=value});document.querySelectorAll('[data-cms-image]').forEach(img=>{const value=content[img.dataset.cmsImage];if(value)img.src=value});document.querySelectorAll('[data-score-bar]').forEach(bar=>{const value=parseFloat(content[bar.dataset.scoreBar]);if(!Number.isNaN(value))bar.style.setProperty('--w',Math.max(0,Math.min(100,value))+'%')});document.querySelectorAll('[data-timeline-card]').forEach(card=>{card.classList.toggle('hot',content['timeline-highlight']?card.dataset.timelineCard===content['timeline-highlight']:card.classList.contains('hot'));const url=content['timeline-'+card.dataset.timelineCard+'-link'];if(url&&!card.dataset.linked){card.dataset.linked='true';card.classList.add('has-link');card.tabIndex=0;card.setAttribute('role','link');card.setAttribute('aria-label','Open timeline source');const openLink=()=>window.open(url,'_blank','noopener');card.addEventListener('click',openLink);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openLink()}})}});applySeo(content)}
+function applyDesignVisibility(content){if(!content)return;const nav=document.querySelector('#vswitch');if(!nav)return;let visible=0;nav.querySelectorAll('a[data-design-toggle]').forEach(a=>{const hidden=content['design-'+a.dataset.designToggle+'-visibility']==='hide';a.style.display=hidden?'none':'';if(!hidden)visible++});nav.style.display=visible>1?'':'none'}
+function applyPullAttribution(content){const el=document.querySelector('#pull-attr');if(!el||!content)return;const value=content['alt-pull-quote-attribution'];if(value){el.textContent=value;el.classList.remove('add-copy')}}
+function applyContent(content){if(!content||typeof content!=='object')return;document.querySelectorAll('[data-cms]').forEach(el=>{const value=content[el.dataset.cms];if(value!==undefined)el.innerHTML=value});document.querySelectorAll('[data-cms-link]').forEach(el=>{const value=content[el.dataset.cmsLink];if(value)el.href=value});document.querySelectorAll('[data-cms-image]').forEach(img=>{const value=content[img.dataset.cmsImage];if(value)img.src=value});document.querySelectorAll('[data-score-bar]').forEach(bar=>{const value=parseFloat(content[bar.dataset.scoreBar]);if(!Number.isNaN(value))bar.style.setProperty('--w',Math.max(0,Math.min(100,value))+'%')});document.querySelectorAll('[data-timeline-card]').forEach(card=>{card.classList.toggle('hot',content['timeline-highlight']?card.dataset.timelineCard===content['timeline-highlight']:card.classList.contains('hot'));const url=content['timeline-'+card.dataset.timelineCard+'-link'];if(url&&!card.dataset.linked){card.dataset.linked='true';card.classList.add('has-link');card.tabIndex=0;card.setAttribute('role','link');card.setAttribute('aria-label','Open timeline source');const openLink=()=>window.open(url,'_blank','noopener');card.addEventListener('click',openLink);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openLink()}})}});applySeo(content);applyDesignVisibility(content);applyPullAttribution(content)}
 try{applyContent(JSON.parse(localStorage.getItem(cmsStorageKey)||'{}'))}catch(e){}
 async function loadPublishedContent(attempt=0){try{const response=await fetch('/api/content',{cache:'no-store'});const data=response.ok?await response.json():null;if(data&&data.content){sharedContent=data.content;applyContent(sharedContent);return}}catch{}if(attempt<2)setTimeout(()=>loadPublishedContent(attempt+1),350)}
 loadPublishedContent();

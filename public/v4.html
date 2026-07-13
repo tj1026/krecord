@@ -21,7 +21,6 @@
   --cream-2:#EDE6D5;
   --gold:#F2B33D;
   --white:#FFFDF8;
-  --mark:#FFE500;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -29,7 +28,6 @@ body{background:var(--cream);color:var(--ink);font-family:'Space Grotesk',sans-s
 a{color:inherit;text-decoration:none}
 .black{font-family:'Archivo Black','Archivo',sans-serif;text-transform:uppercase}
 .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
-mark,.add-copy{background:var(--mark);color:var(--ink);padding:.06em .28em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .rv{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
 .rv.d1{transition-delay:.09s}.rv.d2{transition-delay:.18s}.rv.d3{transition-delay:.27s}
@@ -151,7 +149,6 @@ mark,.add-copy{background:var(--mark);color:var(--ink);padding:.06em .28em;box-d
 
 /* closing */
 .closing{background:var(--red);color:var(--white);text-align:center;padding:clamp(80px,13vh,140px) 24px;position:relative;overflow:hidden}
-.closing::before{content:"98% 98% 98% 98% 98%";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:'Archivo Black',sans-serif;font-size:clamp(70px,14vw,160px);white-space:nowrap;color:rgba(18,17,20,.12);pointer-events:none;letter-spacing:.02em}
 .closing h2{font-family:'Archivo',sans-serif;font-weight:900;text-transform:uppercase;font-size:clamp(36px,6.4vw,72px);line-height:.95;position:relative;letter-spacing:-.01em}
 .closing h2 span{color:var(--gold)}
 .closing p{color:rgba(255,253,248,.85);margin:20px auto 38px;max-width:460px;font-size:16px;position:relative;font-weight:500}
@@ -248,7 +245,7 @@ dialog::backdrop{background:rgba(18,17,20,.78)}
         </div>
       </article>
       <div class="receipt rv d1">
-        <div class="rhead"><span class="t"><span class="add-copy" title="New label — decorative receipt header, edit or remove">The receipt</span></span><span class="no"><span class="add-copy" title="New label — decorative, edit or remove">Itemized · public sources</span></span></div>
+        <div class="rhead"><span class="t" data-cms="alt-receipt-label">The receipt</span><span class="no" data-cms="alt-receipt-sublabel">Itemized · public sources</span></div>
         <div class="ritem">
           <div class="thumb"><img data-cms-image="health-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Rep. Kevin Kiley" style="object-position:left center"></div>
           <div class="body"><div class="kick" data-cms="record-one-kicker">Health care</div><h4 data-cms="record-one-title">Cuts with real consequences</h4><p data-cms="record-one-copy">Kiley supported Trump’s budget bill, which would take health care from nearly 44,000 people and cut food assistance for more than 41,000 households in the old CA-06. He also aligned himself with anti-vaccine MAGA rhetoric and opposed science-based public-health policy.</p></div>
@@ -261,7 +258,7 @@ dialog::backdrop{background:rgba(18,17,20,.78)}
           <div class="thumb"><img data-cms-image="abortion-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Rep. Kevin Kiley" style="object-position:center top"></div>
           <div class="body"><div class="kick" data-cms="record-three-kicker">Abortion rights</div><h4 data-cms="record-three-title">Opposed Proposition 1</h4><p data-cms="record-three-copy">Kiley opposed Proposition 1, the 2022 ballot measure that explicitly protected abortion and contraception in California’s constitution.</p></div>
         </div>
-        <div class="rfoot"><span><span class="add-copy" title="New label — decorative receipt footer, edit or remove">Alignment total</span></span><span class="total" data-cms="score-one-value">98%</span></div>
+        <div class="rfoot"><span data-cms="alt-receipt-total-label">Alignment total</span><span class="total" data-cms="score-one-value">98%</span></div>
       </div>
     </div>
   </div>
@@ -294,14 +291,15 @@ dialog::backdrop{background:rgba(18,17,20,.78)}
   </div>
 </dialog>
 
-<nav class="vswitch" aria-label="Design versions"><span>Design</span><a href="/index.html">1</a><a href="/v2.html">2</a><a href="/v3.html">3</a><a href="/v4.html" class="on" aria-current="page">4</a></nav>
+<nav class="vswitch" aria-label="Design versions" id="vswitch"><span>Design</span><a href="/index.html" data-design-toggle="1">1</a><a href="/v2.html" data-design-toggle="2">2</a><a href="/v3.html" data-design-toggle="3">3</a><a href="/v4.html" class="on" aria-current="page" data-design-toggle="4">4</a></nav>
 
 <script>
 const cmsStorageKey='kiley-record-content-v1';
 let sharedContent={};
 function setMeta(selector,content){if(!content)return;let tag=document.head.querySelector(selector);if(!tag){tag=document.createElement('meta');const match=selector.match(/^meta\[([^=]+)=\"([^\"]+)\"\]$/);if(!match)return;tag.setAttribute(match[1],match[2]);document.head.append(tag)}tag.content=content}
 function applySeo(content){const title=content['seo-title'],description=content['seo-description'],keywords=content['seo-keywords'],socialImage=content['seo-social-image'];if(title){document.title=title;setMeta('meta[property="og:title"]',title)}if(description){setMeta('meta[name="description"]',description);setMeta('meta[property="og:description"]',description)}if(keywords)setMeta('meta[name="keywords"]',keywords);if(socialImage){setMeta('meta[property="og:image"]',socialImage);setMeta('meta[name="twitter:image"]',socialImage)}}
-function applyContent(content){if(!content||typeof content!=='object')return;document.querySelectorAll('[data-cms]').forEach(el=>{const value=content[el.dataset.cms];if(value!==undefined)el.innerHTML=value});document.querySelectorAll('[data-cms-link]').forEach(el=>{const value=content[el.dataset.cmsLink];if(value)el.href=value});document.querySelectorAll('[data-cms-image]').forEach(img=>{const value=content[img.dataset.cmsImage];if(value)img.src=value});document.querySelectorAll('[data-score-bar]').forEach(bar=>{const value=parseFloat(content[bar.dataset.scoreBar]);if(!Number.isNaN(value))bar.style.setProperty('--w',Math.max(0,Math.min(100,value))+'%')});document.querySelectorAll('[data-timeline-card]').forEach(card=>{card.classList.toggle('hot',content['timeline-highlight']?card.dataset.timelineCard===content['timeline-highlight']:card.classList.contains('hot'));const url=content['timeline-'+card.dataset.timelineCard+'-link'];if(url&&!card.dataset.linked){card.dataset.linked='true';card.classList.add('has-link');card.tabIndex=0;card.setAttribute('role','link');card.setAttribute('aria-label','Open timeline source');const openLink=()=>window.open(url,'_blank','noopener');card.addEventListener('click',openLink);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openLink()}})}});applySeo(content)}
+function applyDesignVisibility(content){if(!content)return;const nav=document.querySelector('#vswitch');if(!nav)return;let visible=0;nav.querySelectorAll('a[data-design-toggle]').forEach(a=>{const hidden=content['design-'+a.dataset.designToggle+'-visibility']==='hide';a.style.display=hidden?'none':'';if(!hidden)visible++});nav.style.display=visible>1?'':'none'}
+function applyContent(content){if(!content||typeof content!=='object')return;document.querySelectorAll('[data-cms]').forEach(el=>{const value=content[el.dataset.cms];if(value!==undefined)el.innerHTML=value});document.querySelectorAll('[data-cms-link]').forEach(el=>{const value=content[el.dataset.cmsLink];if(value)el.href=value});document.querySelectorAll('[data-cms-image]').forEach(img=>{const value=content[img.dataset.cmsImage];if(value)img.src=value});document.querySelectorAll('[data-score-bar]').forEach(bar=>{const value=parseFloat(content[bar.dataset.scoreBar]);if(!Number.isNaN(value))bar.style.setProperty('--w',Math.max(0,Math.min(100,value))+'%')});document.querySelectorAll('[data-timeline-card]').forEach(card=>{card.classList.toggle('hot',content['timeline-highlight']?card.dataset.timelineCard===content['timeline-highlight']:card.classList.contains('hot'));const url=content['timeline-'+card.dataset.timelineCard+'-link'];if(url&&!card.dataset.linked){card.dataset.linked='true';card.classList.add('has-link');card.tabIndex=0;card.setAttribute('role','link');card.setAttribute('aria-label','Open timeline source');const openLink=()=>window.open(url,'_blank','noopener');card.addEventListener('click',openLink);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openLink()}})}});applySeo(content);applyDesignVisibility(content)}
 try{applyContent(JSON.parse(localStorage.getItem(cmsStorageKey)||'{}'))}catch(e){}
 async function loadPublishedContent(attempt=0){try{const response=await fetch('/api/content',{cache:'no-store'});const data=response.ok?await response.json():null;if(data&&data.content){sharedContent=data.content;applyContent(sharedContent);return}}catch{}if(attempt<2)setTimeout(()=>loadPublishedContent(attempt+1),350)}
 loadPublishedContent();
