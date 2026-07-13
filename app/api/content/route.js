@@ -1,13 +1,12 @@
-import { list, put } from '@vercel/blob';
+import { get, put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
 async function readContent() {
-  const { blobs } = await list({ prefix: 'cms/content.json', limit: 1 });
-  if (!blobs.length) return null;
-  const response = await fetch(blobs[0].url, { cache: 'no-store' });
-  return response.ok ? response.json() : null;
+  const result = await get('cms/content.json', { access: 'private', useCache: false });
+  if (!result) return null;
+  return new Response(result.stream).json();
 }
 
 export async function GET() {
@@ -33,7 +32,7 @@ export async function PUT(request) {
       return NextResponse.json({ error: 'Content must be an object.' }, { status: 400 });
     }
     await put('cms/content.json', JSON.stringify(content), {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: false,
       allowOverwrite: true,
       contentType: 'application/json',
