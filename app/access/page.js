@@ -1,6 +1,6 @@
 export default async function AccessPage({ searchParams }) {
   const params = await searchParams;
-  const next = typeof params?.next === 'string' && params.next.startsWith('/') ? params.next : '/index.html';
+  const next = typeof params?.next === 'string' && params.next.startsWith('/') && params.next !== '/' ? params.next : '/index.html';
   const invalid = params?.error === '1';
 
   return <main style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24, background: '#111110', color: '#fffdf8', fontFamily: 'Arial, sans-serif' }}>
