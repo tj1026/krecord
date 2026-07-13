@@ -12,7 +12,7 @@ export function proxy(request) {
   }
 
   const url = new URL('/access', request.url);
-  url.searchParams.set('next', `${request.nextUrl.pathname}${request.nextUrl.search}`);
+  url.searchParams.set('next', '/index.html');
   return NextResponse.redirect(url);
 }
 
