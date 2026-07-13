@@ -34,6 +34,11 @@ const groups=[
   ['Sharing','The copy and destination used for social posts.',[['share-button-label','Share button label','Share his record','short'],['share-kicker','Share modal label','Share the record','short'],['share-title','Share modal headline','Share his record','short'],['share-copy','Share modal copy','Choose a platform to share this page.','long'],['share-text','Post text','Take a look at Kevin Kiley’s record.','long'],['share-url','Website URL','','url']]],
   ['Closing','The final call to action and footer.',[['closing-title','Closing headline','Read it. Check it. <span>Share it.</span>','short'],['closing-copy','Closing copy','The record is public. The question is what it adds up to.','long'],['footer-text','Footer text','Paid for by Dr. Richard Pan for Congress','short']]]
 ];
+groups[5][2].push(
+  ['record-one-kicker','Health care label','Health care','short'],
+  ['record-two-kicker','Retirement security label','Retirement security','short'],
+  ['record-three-kicker','Abortion rights label','Abortion rights','short']
+);
 const form=document.querySelector('#editor'),status=document.querySelector('#status'),passwordInput=document.querySelector('#cms-password');
 passwordInput.value=sessionStorage.getItem('kiley-record-cms-password')||'';
 passwordInput.addEventListener('input',()=>sessionStorage.setItem('kiley-record-cms-password',passwordInput.value));
