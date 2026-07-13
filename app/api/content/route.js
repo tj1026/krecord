@@ -1,13 +1,8 @@
-import { get, put } from '@vercel/blob';
+import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
+import { readContent } from '../../../lib/content';
 
 export const runtime = 'nodejs';
-
-async function readContent() {
-  const result = await get('cms/content.json', { access: 'private', useCache: false });
-  if (!result) return null;
-  return new Response(result.stream).json();
-}
 
 export async function GET() {
   try {
