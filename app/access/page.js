@@ -1,10 +1,11 @@
 export default async function AccessPage({ searchParams }) {
   const params = await searchParams;
   const invalid = params?.error === '1';
+  const requested = typeof params?.next === 'string' && params.next.startsWith('/') && !params.next.startsWith('//') ? params.next : '/index.html';
 
   return <main style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24, background: '#111110', color: '#fffdf8', fontFamily: 'Arial, sans-serif' }}>
     <form action="/api/site-access" method="post" style={{ width: 'min(420px, 100%)', border: '2px solid #fffdf8', padding: 28, boxShadow: '8px 8px 0 #b31226' }}>
-      <input type="hidden" name="next" value="/index.html" />
+      <input type="hidden" name="next" value={requested} />
       <p style={{ margin: 0, color: '#e8b54a', fontSize: 12, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase' }}>Private preview</p>
       <h1 style={{ margin: '10px 0 22px', fontSize: 38, lineHeight: 1, textTransform: 'uppercase' }}>The Kiley Record</h1>
       <label htmlFor="site-password" style={{ display: 'block', marginBottom: 8, fontSize: 12, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' }}>Site password</label>
