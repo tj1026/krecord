@@ -76,6 +76,21 @@ export default function AdminPage() {
 
   useEffect(() => {
     setPassword(sessionStorage.getItem(PASSWORD_KEY) || '');
+
+    // The content this browser last saved (via this editor or the old
+    // cms.html). Kept so we can recover work that never made it into the
+    // database — e.g. content published to the previous Vercel Blob store.
+    let cached = null;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') cached = parsed;
+      }
+    } catch {
+      // Ignore an unreadable/corrupt cache; fall through to defaults.
+    }
+
     (async () => {
       try {
         const response = await fetch('/api/content', { cache: 'no-store' });
@@ -83,9 +98,17 @@ export default function AdminPage() {
         if (response.ok && data.content) {
           setValues(prev => ({ ...prev, ...data.content }));
           setStatus('Loaded published content.');
+          return;
         }
       } catch {
-        // Leave defaults in place; the save action will surface any real problem.
+        // Fall through to the browser copy below.
+      }
+      // Nothing in the database yet. If this browser has a saved copy,
+      // pre-fill it so the editor shows your content — click Save changes to
+      // publish it to the live site.
+      if (cached) {
+        setValues(prev => ({ ...prev, ...cached }));
+        setStatus('The live site has no saved content yet, so this shows your browser’s copy. Click “Save changes” to publish it to the live site.');
       }
     })();
   }, []);
