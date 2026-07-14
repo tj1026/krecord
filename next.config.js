@@ -9,7 +9,7 @@ const nextConfig = {
     ];
     return [
       { source: '/:path*', headers: securityHeaders },
-      { source: '/editor-34f3db845d14.html', headers: [...securityHeaders, { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }] }
+      { source: '/admin', headers: [...securityHeaders, { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }] }
     ];
   }
 };
