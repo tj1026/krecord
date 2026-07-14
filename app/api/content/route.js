@@ -33,6 +33,15 @@ export async function PUT(request) {
     await writeContent(content);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Unable to save content.' }, { status: 500 });
+    if (error?.message?.includes('DATABASE_URL')) {
+      return NextResponse.json(
+        { error: 'Content storage is not configured: set a DATABASE_URL environment variable pointing to your Postgres database, then redeploy.' },
+        { status: 503 }
+      );
+    }
+    return NextResponse.json(
+      { error: 'Unable to save content — the database rejected the write. Check that DATABASE_URL points to a reachable Postgres database.' },
+      { status: 500 }
+    );
   }
 }
