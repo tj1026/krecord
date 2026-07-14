@@ -63,12 +63,6 @@ function Field({ field, value, onChange, onStatus }) {
       {['hero-title', 'closing-title'].includes(field.key) && (
         <small>Simple formatting such as &lt;br&gt; and &lt;span&gt; is supported.</small>
       )}
-      {field.key === 'alt-pull-quote-attribution' && (
-        <small>Leave blank to keep this flagged in yellow on Design 3 until a source is added.</small>
-      )}
-      {field.key.startsWith('design-') && field.key.endsWith('-visibility') && (
-        <small>If only one design is left visible, the switcher disappears from every page.</small>
-      )}
     </div>
   );
 }
