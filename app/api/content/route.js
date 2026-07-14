@@ -1,6 +1,8 @@
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 import { readContent } from '../../../lib/content';
+import { safeEquals } from '../../../lib/auth';
+import { clientKey, isRateLimited } from '../../../lib/rate-limit';
 
 export const runtime = 'nodejs';
 
@@ -17,7 +19,10 @@ export async function PUT(request) {
   if (!process.env.CMS_PASSWORD) {
     return NextResponse.json({ error: 'CMS_PASSWORD is not configured.' }, { status: 503 });
   }
-  if (password !== process.env.CMS_PASSWORD) {
+  if (isRateLimited('cms-save:' + clientKey(request))) {
+    return NextResponse.json({ error: 'Too many attempts. Wait a minute and try again.' }, { status: 429 });
+  }
+  if (typeof password !== 'string' || !safeEquals(password, process.env.CMS_PASSWORD)) {
     return NextResponse.json({ error: 'Incorrect editor password.' }, { status: 401 });
   }
 
