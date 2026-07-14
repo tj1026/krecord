@@ -13,6 +13,9 @@ export default async function Home() {
     content = null;
   }
 
-  const target = designPages.find((page, i) => content?.[`design-${i + 1}-visibility`] !== 'hide') || designPages[0];
+  // Design 5 is the live default. If the CMS hasn't set anything yet (fresh
+  // database, or a design explicitly hidden), fall back to it rather than
+  // Design 1.
+  const target = designPages.find((page, i) => content?.[`design-${i + 1}-visibility`] === 'show') || '/v5.html';
   redirect(target);
 }
