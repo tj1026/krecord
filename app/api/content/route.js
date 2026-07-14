@@ -39,8 +39,11 @@ export async function PUT(request) {
         { status: 503 }
       );
     }
+    // Surface the underlying database error to the (already password-gated)
+    // editor so a failing DATABASE_URL can be diagnosed instead of guessed.
+    console.error('CMS save failed:', error);
     return NextResponse.json(
-      { error: 'Unable to save content — the database rejected the write. Check that DATABASE_URL points to a reachable Postgres database.' },
+      { error: 'Unable to save content — the database rejected the write. Details: ' + (error?.message || 'unknown error') },
       { status: 500 }
     );
   }
