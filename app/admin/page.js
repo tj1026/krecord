@@ -57,7 +57,13 @@ function Field({ field, value, onChange, onStatus }) {
             Choose image
             <input type="file" accept="image/*" onChange={handleImagePick} />
           </label>
-          <small>Paste an image URL, or upload a local image under 750 KB.</small>
+          <small>
+            {field.key === 'seo-social-image'
+              ? 'Shown when the site link is shared (about 1200×630). Paste a hosted image URL — an uploaded file won’t appear in social previews.'
+              : field.key === 'favicon'
+                ? 'Optional. The little icon in the browser tab. Leave blank to use the default mark.'
+                : 'Paste an image URL, or upload a local image under 750 KB.'}
+          </small>
         </>
       )}
       {['hero-title', 'closing-title'].includes(field.key) && (
