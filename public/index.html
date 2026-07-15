@@ -96,7 +96,7 @@ section{padding:64px 0;border-bottom:3px solid var(--ink)}
 .sechead::after{content:"";flex:1;height:3px;background:var(--ink)}
 
 /* timeline — punch cards */
-.tl{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
 @media(max-width:820px){.tl{grid-template-columns:1fr 1fr}.score-layout{grid-template-columns:1fr}.score-photo{width:min(300px,80%);justify-self:center}}
 @media(max-width:520px){.tl{grid-template-columns:1fr}}
 .tl-card{border:2px solid var(--ink);padding:20px;position:relative;background:var(--paper)}
@@ -148,16 +148,18 @@ details.story[open] .more{display:none}
 
 /* beyond the votes */
 .context{background:var(--paper-2)}
-.context-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:start}
+.context-grid{display:flex;flex-direction:column;gap:26px}
+.context-items-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.context-item .src{display:inline-block;color:var(--red);font:800 10px 'Libre Franklin',sans-serif;letter-spacing:.13em;text-transform:uppercase;margin-top:9px;margin-right:14px;text-decoration:underline}
 .lead-story{background:var(--ink);color:var(--paper);border:3px solid var(--ink);overflow:hidden;transition:transform .32s ease,box-shadow .32s ease}
 .lead-story img{width:100%;aspect-ratio:16/8;object-fit:cover;display:block;opacity:.78;transition:transform .55s ease,opacity .35s ease}
 .lead-story .inside{padding:24px}
 .eyebrow{color:#E8B54A;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800}
+.context-item .eyebrow{color:var(--red)}
 .lead-story h3{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(29px,4vw,47px);line-height:.96;margin:8px 0 12px}
 .lead-story p{font-size:15px;line-height:1.55;color:rgba(255,253,248,.8)}
 .read-more{display:inline-flex;align-items:center;gap:8px;border:0;background:#E8B54A;color:var(--ink);padding:10px 14px;margin-top:18px;font:800 11px 'Libre Franklin',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 .read-more:hover{background:var(--paper)}
-.context-list{display:grid;gap:14px}
 .context-item{border:2px solid var(--ink);background:var(--paper);display:grid;grid-template-columns:104px 1fr;min-height:132px;overflow:hidden;transition:transform .28s ease,box-shadow .28s ease,background .28s ease}
 .context-item img{width:100%;height:100%;object-fit:cover;border-right:2px solid var(--ink);transition:filter .3s ease,transform .45s ease}
 .context-item .copy{padding:15px 16px}
@@ -168,7 +170,8 @@ dialog{position:fixed;inset:0;width:fit-content;height:fit-content;max-width:min
 dialog::backdrop{background:rgba(17,17,16,.74)}
 .dialog-photo{width:100%;height:180px;object-fit:cover;border-bottom:3px solid var(--ink)}
 .dialog-copy{padding:24px}.dialog-copy h3{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:35px;line-height:1;margin:6px 0 14px}.dialog-copy p{margin-top:10px;font-size:15px}.dialog-copy .source{font-size:12px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px;margin-top:18px}.dialog-copy .source a{font-weight:700}.dialog-close{float:right;border:2px solid var(--ink);background:var(--paper);padding:5px 8px;font:800 11px 'Libre Franklin',sans-serif;letter-spacing:.1em;cursor:pointer}
-@media(max-width:820px){.context-grid{grid-template-columns:1fr}.context-item{grid-template-columns:92px 1fr}}
+@media(max-width:820px){.context-items-grid{grid-template-columns:1fr 1fr}.context-item{grid-template-columns:92px 1fr}}
+@media(max-width:560px){.context-items-grid{grid-template-columns:1fr}}
 
 /* key votes — stamp rows */
 .votes{display:grid;gap:14px}
@@ -249,6 +252,7 @@ setTimeout(window.__cmsReveal,2000);
       <div class="tl-card" data-timeline-card="two"><div class="yr" data-cms="timeline-two-year">2022</div><div class="party" data-cms="timeline-two-label">Republican</div><p data-cms="timeline-two-copy">Elected to the U.S. House on the Republican line.</p></div>
       <div class="tl-card hot" data-timeline-card="three"><div class="yr" data-cms="timeline-three-year">2026</div><div class="party" data-cms="timeline-three-label">"Independent"</div><p data-cms="timeline-three-copy">Switches his party affiliation. The political agenda he supports does not change.</p></div>
       <div class="tl-card" data-timeline-card="four"><div class="yr" data-cms="timeline-four-year">2026</div><div class="party" data-cms="timeline-four-label">With Trump</div><p data-cms="timeline-four-copy">After the switch, his record remains aligned with Trump and the MAGA-led GOP.</p></div>
+      <div class="tl-card" data-timeline-card="five"><div class="yr" data-cms="timeline-five-year">Feb 2026</div><div class="party" data-cms="timeline-five-label">Conservative Republican</div><p data-cms="timeline-five-copy">Kiley posted a video describing himself as a "Conservative Republican Congressman," saying "no one has fought Gavin Newsom harder than Kevin."</p></div>
     </div>
   </div>
 </section>
@@ -278,7 +282,7 @@ setTimeout(window.__cmsReveal,2000);
           <p data-cms="context-summary">For years, Kevin Kiley declined to denounce Trump's false claims that the 2020 election was stolen. That record belongs in any accounting of the politics he chose to embrace.</p>
         </div>
       </article>
-      <div class="context-list">
+      <div class="context-items-grid">
         <article class="context-item">
           <img data-cms-image="health-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley" style="object-position:left center">
           <div class="copy"><div class="eyebrow" data-cms="record-one-kicker">Health care</div><h3 data-cms="record-one-title">Cuts with real consequences</h3><p data-cms="record-one-copy">Kiley supported Trump’s budget bill, which would take health care from nearly 44,000 people and cut food assistance for more than 41,000 households in the old CA-06. He also aligned himself with anti-vaccine MAGA rhetoric and opposed science-based public-health policy.</p></div>
@@ -290,6 +294,14 @@ setTimeout(window.__cmsReveal,2000);
         <article class="context-item">
           <img data-cms-image="abortion-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley" style="object-position:center top">
           <div class="copy"><div class="eyebrow" data-cms="record-three-kicker">Abortion rights</div><h3 data-cms="record-three-title">Opposed Proposition 1</h3><p data-cms="record-three-copy">Kiley opposed Proposition 1, the 2022 ballot measure that explicitly protected abortion and contraception in California’s constitution.</p></div>
+        </article>
+        <article class="context-item">
+          <img data-cms-image="donors-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley" style="object-position:left top">
+          <div class="copy"><div class="eyebrow" data-cms="record-four-kicker">Campaign donors</div><h3 data-cms="record-four-title">Backed by Trump's biggest donors</h3><p data-cms="record-four-copy">Kiley's campaign has drawn support from some of Donald Trump's biggest donors, tying his political fortunes to the same network bankrolling Trump's agenda.</p><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-four-link-one">Source 1</a><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-four-link-two">Source 2</a></div>
+        </article>
+        <article class="context-item">
+          <img data-cms-image="jan6-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley" style="object-position:right top">
+          <div class="copy"><div class="eyebrow" data-cms="record-five-kicker">January 6</div><h3 data-cms="record-five-title">Flip-flopped on the case against Trump</h3><p data-cms="record-five-copy">Kiley's position on the case against Trump for January 6 has shifted over time, reversing course as he aligned himself more closely with Trump.</p><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-five-link">Source</a></div>
         </article>
       </div>
     </div>
