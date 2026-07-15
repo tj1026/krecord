@@ -73,6 +73,9 @@ export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState('');
   const [saving, setSaving] = useState(false);
+  const [siteConfigured, setSiteConfigured] = useState(null);
+  const [passwordEnabled, setPasswordEnabled] = useState(null);
+  const [accessBusy, setAccessBusy] = useState(false);
 
   useEffect(() => {
     setPassword(sessionStorage.getItem(PASSWORD_KEY) || '');
@@ -111,7 +114,46 @@ export default function AdminPage() {
         setStatus('The live site has no saved content yet, so this shows your browser’s copy. Click “Save changes” to publish it to the live site.');
       }
     })();
+
+    (async () => {
+      try {
+        const response = await fetch('/api/site-settings', { cache: 'no-store' });
+        const data = await response.json();
+        setSiteConfigured(Boolean(data.configured));
+        if (typeof data.passwordEnabled === 'boolean') setPasswordEnabled(data.passwordEnabled);
+      } catch {
+        // Leave the status unknown; the section shows a neutral message.
+      }
+    })();
   }, []);
+
+  async function toggleSitePassword(nextEnabled) {
+    if (!password) {
+      setStatus('Enter the editor password above before changing the site password.');
+      return;
+    }
+    setAccessBusy(true);
+    const previous = passwordEnabled;
+    setPasswordEnabled(nextEnabled);
+    try {
+      const response = await fetch('/api/site-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'x-cms-password': password },
+        body: JSON.stringify({ passwordEnabled: nextEnabled })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Unable to update the site password.');
+      setPasswordEnabled(data.passwordEnabled);
+      setStatus(data.passwordEnabled
+        ? 'Site password turned on. Visitors must enter it to view the site.'
+        : 'Site password turned off. The site is now public — this can take a few seconds to apply.');
+    } catch (error) {
+      setPasswordEnabled(previous);
+      setStatus(error.message || 'Unable to update the site password.');
+    } finally {
+      setAccessBusy(false);
+    }
+  }
 
   function updatePassword(next) {
     setPassword(next);
@@ -192,6 +234,31 @@ export default function AdminPage() {
           <label htmlFor="cms-password">Editor password</label>
           <input id="cms-password" type="password" autoComplete="current-password" value={password} onChange={e => updatePassword(e.target.value)} />
           <p>This password is set in Vercel. It is kept only for this browser session.</p>
+        </div>
+        <div className={styles.gate}>
+          <div className={styles.gateHead}>
+            <span className={styles.gateTitle}>Site password</span>
+            {siteConfigured && passwordEnabled !== null && (
+              <label className={styles.toggle}>
+                <input
+                  type="checkbox"
+                  checked={passwordEnabled}
+                  disabled={accessBusy}
+                  onChange={e => toggleSitePassword(e.target.checked)}
+                />
+                <span>{passwordEnabled ? 'Required to view the site' : 'Off — site is public'}</span>
+              </label>
+            )}
+          </div>
+          <p className={styles.gateNote}>
+            {siteConfigured === false
+              ? 'No site password is set for this deployment, so the site is already public to anyone with the link.'
+              : passwordEnabled === null
+                ? 'Checking whether visitors currently need a password…'
+                : passwordEnabled
+                  ? 'Visitors must enter the site password before they can see the page. Turn it off to make the site public — the editor password above is required to change this.'
+                  : 'The site is public: anyone with the link can view it without a password. Turn it back on to require the site password again.'}
+          </p>
         </div>
         <div className={styles.tabs} role="tablist" aria-label="Content sections">
           {cmsGroups.map((g, i) => (
