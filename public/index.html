@@ -148,9 +148,19 @@ details.story[open] .more{display:none}
 
 /* beyond the votes */
 .context{background:var(--paper-2)}
-.context-grid{display:flex;flex-direction:column;gap:26px}
+.context-grid{display:flex;flex-direction:column;gap:20px}
 .context-items-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.context-item .src{display:inline-block;color:var(--red);font:800 10px 'Libre Franklin',sans-serif;letter-spacing:.13em;text-transform:uppercase;margin-top:9px;margin-right:14px;text-decoration:underline}
+.context-subhead{display:flex;align-items:center;gap:12px;margin-top:8px}
+.context-subhead::before,.context-subhead::after{content:"";flex:1;height:2px;background:var(--rule)}
+.context-wide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.context-wide-item{border:2px solid var(--ink);background:var(--paper);overflow:hidden}
+.context-wide-item img{width:100%;aspect-ratio:16/8;object-fit:cover;display:block}
+.context-wide-item .copy{padding:20px}
+.context-wide-item h3{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(20px,2.4vw,26px);line-height:1.05;margin:6px 0 8px}
+.context-wide-item p{font-size:14px;color:var(--muted);line-height:1.5}
+.src-row{margin-top:10px}
+.context-item .src,.context-wide-item .src{display:inline-block;color:var(--red);font:800 10px 'Libre Franklin',sans-serif;letter-spacing:.13em;text-transform:uppercase;margin-top:9px;margin-right:14px;text-decoration:underline}
+.context-wide-item .src{margin-top:0}
 .lead-story{background:var(--ink);color:var(--paper);border:3px solid var(--ink);overflow:hidden;transition:transform .32s ease,box-shadow .32s ease}
 .lead-story img{width:100%;aspect-ratio:16/8;object-fit:cover;display:block;opacity:.78;transition:transform .55s ease,opacity .35s ease}
 .lead-story .inside{padding:24px}
@@ -170,7 +180,7 @@ dialog{position:fixed;inset:0;width:fit-content;height:fit-content;max-width:min
 dialog::backdrop{background:rgba(17,17,16,.74)}
 .dialog-photo{width:100%;height:180px;object-fit:cover;border-bottom:3px solid var(--ink)}
 .dialog-copy{padding:24px}.dialog-copy h3{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:35px;line-height:1;margin:6px 0 14px}.dialog-copy p{margin-top:10px;font-size:15px}.dialog-copy .source{font-size:12px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px;margin-top:18px}.dialog-copy .source a{font-weight:700}.dialog-close{float:right;border:2px solid var(--ink);background:var(--paper);padding:5px 8px;font:800 11px 'Libre Franklin',sans-serif;letter-spacing:.1em;cursor:pointer}
-@media(max-width:820px){.context-items-grid{grid-template-columns:1fr 1fr}.context-item{grid-template-columns:92px 1fr}}
+@media(max-width:820px){.context-items-grid{grid-template-columns:1fr 1fr}.context-item{grid-template-columns:92px 1fr}.context-wide-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.context-items-grid{grid-template-columns:1fr}}
 
 /* key votes — stamp rows */
@@ -295,13 +305,16 @@ setTimeout(window.__cmsReveal,2000);
           <img data-cms-image="abortion-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley" style="object-position:center top">
           <div class="copy"><div class="eyebrow" data-cms="record-three-kicker">Abortion rights</div><h3 data-cms="record-three-title">Opposed Proposition 1</h3><p data-cms="record-three-copy">Kiley opposed Proposition 1, the 2022 ballot measure that explicitly protected abortion and contraception in California’s constitution.</p></div>
         </article>
-        <article class="context-item">
-          <img data-cms-image="donors-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley" style="object-position:left top">
-          <div class="copy"><div class="eyebrow" data-cms="record-four-kicker">Campaign donors</div><h3 data-cms="record-four-title">Backed by Trump's biggest donors</h3><p data-cms="record-four-copy">Kiley's campaign has drawn support from some of Donald Trump's biggest donors, tying his political fortunes to the same network bankrolling Trump's agenda.</p><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-four-link-one">Source 1</a><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-four-link-two">Source 2</a></div>
+      </div>
+      <div class="context-subhead"><span class="eyebrow">Also in the record</span></div>
+      <div class="context-wide-grid">
+        <article class="context-wide-item">
+          <img data-cms-image="donors-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley">
+          <div class="copy"><div class="eyebrow" data-cms="record-four-kicker">Campaign donors</div><h3 data-cms="record-four-title">Backed by Trump's biggest donors</h3><p data-cms="record-four-copy">Kiley's campaign has drawn support from some of Donald Trump's biggest donors, tying his political fortunes to the same network bankrolling Trump's agenda.</p><div class="src-row"><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-four-link-one">Source 1</a><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-four-link-two">Source 2</a></div></div>
         </article>
-        <article class="context-item">
-          <img data-cms-image="jan6-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley" style="object-position:right top">
-          <div class="copy"><div class="eyebrow" data-cms="record-five-kicker">January 6</div><h3 data-cms="record-five-title">Flip-flopped on the case against Trump</h3><p data-cms="record-five-copy">Kiley's position on the case against Trump for January 6 has shifted over time, reversing course as he aligned himself more closely with Trump.</p><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-five-link">Source</a></div>
+        <article class="context-wide-item">
+          <img data-cms-image="jan6-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley">
+          <div class="copy"><div class="eyebrow" data-cms="record-five-kicker">January 6</div><h3 data-cms="record-five-title">Flip-flopped on the case against Trump</h3><p data-cms="record-five-copy">Kiley's position on the case against Trump for January 6 has shifted over time, reversing course as he aligned himself more closely with Trump.</p><div class="src-row"><a class="src" href="#" target="_blank" rel="noopener noreferrer" data-cms-link="record-five-link">Source</a></div></div>
         </article>
       </div>
     </div>
