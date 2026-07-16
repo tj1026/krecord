@@ -7,15 +7,7 @@ export const runtime = 'nodejs';
 
 export async function GET() {
   try {
-    return NextResponse.json(
-      { content: await readContent() },
-      {
-        // Cache at the edge so a traffic spike is served from the CDN rather
-        // than querying the database on every page load. Edits go live within
-        // s-maxage; stale-while-revalidate keeps it fast while it refreshes.
-        headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' }
-      }
-    );
+    return NextResponse.json({ content: await readContent() });
   } catch (error) {
     return NextResponse.json({ content: null, error: 'Content storage is not configured yet.' }, { status: 503 });
   }

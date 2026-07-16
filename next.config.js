@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // The "/" route handler reads public/index.html at runtime; make sure the
-  // file is bundled into that serverless function.
-  outputFileTracingIncludes: {
-    '/': ['./public/index.html']
-  },
   async headers() {
     const securityHeaders = [
       { key: 'X-Frame-Options', value: 'DENY' },
@@ -15,6 +10,14 @@ const nextConfig = {
     return [
       { source: '/:path*', headers: securityHeaders },
       { source: '/admin', headers: [...securityHeaders, { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }] }
+    ];
+  },
+  async rewrites() {
+    // Serve the single design at the bare domain so the address stays clean
+    // (no "/index.html" in the URL). A rewrite keeps the path as "/" instead
+    // of redirecting to the file.
+    return [
+      { source: '/', destination: '/index.html' }
     ];
   }
 };

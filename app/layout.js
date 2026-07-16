@@ -1,7 +1,6 @@
 export const metadata = {
   title: 'The Kiley Record',
-  description: 'The public record behind the rebrand.',
-  icons: { icon: '/favicon.svg' }
+  description: 'The public record behind the rebrand.'
 };
 
 export default function RootLayout({ children }) {
