@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { isValidSiteAccessToken } from './lib/auth';
 import { isSitePasswordEnabled } from './lib/db';
 
-const unprotectedPaths = ['/access', '/api/site-access', '/api/content', '/api/site-settings', '/favicon.svg'];
+const unprotectedPaths = ['/access', '/api/site-access', '/api/content', '/api/site-settings'];
 
 // The gate can be turned off from the admin page, which flips a row in the
 // database. Reading that row on every single request would add a round trip to
