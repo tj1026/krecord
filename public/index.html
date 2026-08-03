@@ -184,7 +184,8 @@ dialog::backdrop{background:rgba(17,17,16,.74)}
 .closing{border-bottom:none;background:var(--ink);color:var(--paper);text-align:center;padding:80px 24px}
 .closing h2{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(34px,6vw,64px);line-height:.95}
 .closing h2 span{color:#E8B54A}
-.closing p{color:rgba(255,253,248,.7);margin:18px auto 32px;max-width:440px;font-size:15px}
+.closing .closing-copy{display:block;color:rgba(255,253,248,.7);text-decoration:none;margin:28px auto 0;max-width:440px;font-size:15px}
+.closing .closing-copy:hover{text-decoration:underline}
 .btn{display:inline-block;padding:14px 30px;font:800 12px 'Libre Franklin',sans-serif;letter-spacing:.16em;text-transform:uppercase;border:2px solid var(--paper);background:transparent;color:var(--paper);margin:0 6px 12px;cursor:pointer}
 .btn.solid{background:var(--red);border-color:var(--red)}
 .btn:hover{text-decoration:none;opacity:.88}
@@ -303,11 +304,11 @@ setTimeout(window.__cmsReveal,2000);
 
 <section class="closing">
   <h2 class="fade" data-cms="closing-title">Read it. Check it. <span>Share it.</span></h2>
-  <p class="fade" data-cms="closing-copy">The record is public. The question is what it adds up to.</p>
   <div class="fade">
     <a class="btn solid" href="#" target="_blank" rel="noopener noreferrer" data-cms="closing-button-label" data-cms-link="closing-button-link">Learn more</a>
     <button class="btn" type="button" id="share-trigger" data-cms="share-button-label">Share his record</button>
   </div>
+  <a class="closing-copy fade" href="#" target="_blank" rel="noopener noreferrer" data-cms="closing-copy" data-cms-link="closing-copy-link">The record is public. The question is what it adds up to.</a>
 </section>
 
 <footer data-cms="footer-text">Paid for by Dr. Richard Pan for Congress</footer>
