@@ -96,7 +96,7 @@ section{padding:64px 0;border-bottom:3px solid var(--ink)}
 .sechead::after{content:"";flex:1;height:3px;background:var(--ink)}
 
 /* timeline — punch cards */
-.tl{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
 @media(max-width:820px){.tl{grid-template-columns:1fr 1fr}.score-layout{grid-template-columns:1fr}.score-photo{width:min(300px,80%);justify-self:center}}
 @media(max-width:520px){.tl{grid-template-columns:1fr}}
 .tl-card{border:2px solid var(--ink);padding:20px;position:relative;background:var(--paper)}
@@ -249,6 +249,7 @@ setTimeout(window.__cmsReveal,2000);
       <div class="tl-card" data-timeline-card="two"><div class="yr" data-cms="timeline-two-year">2022</div><div class="party" data-cms="timeline-two-label">Republican</div><p data-cms="timeline-two-copy">Elected to the U.S. House on the Republican line.</p></div>
       <div class="tl-card hot" data-timeline-card="three"><div class="yr" data-cms="timeline-three-year">2026</div><div class="party" data-cms="timeline-three-label">"Independent"</div><p data-cms="timeline-three-copy">Switches his party affiliation. The political agenda he supports does not change.</p></div>
       <div class="tl-card" data-timeline-card="four"><div class="yr" data-cms="timeline-four-year">2026</div><div class="party" data-cms="timeline-four-label">With Trump</div><p data-cms="timeline-four-copy">After the switch, his record remains aligned with Trump and the MAGA-led GOP.</p></div>
+      <div class="tl-card" data-timeline-card="five"><div class="yr" data-cms="timeline-five-year">2026</div><div class="party" data-cms="timeline-five-label">New entry</div><p data-cms="timeline-five-copy">Add a description for this date.</p></div>
     </div>
   </div>
 </section>
@@ -290,6 +291,10 @@ setTimeout(window.__cmsReveal,2000);
         <article class="context-item">
           <img data-cms-image="abortion-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley" style="object-position:center top">
           <div class="copy"><div class="eyebrow" data-cms="record-three-kicker">Abortion rights</div><h3 data-cms="record-three-title">Opposed Proposition 1</h3><p data-cms="record-three-copy">Kiley opposed Proposition 1, the 2022 ballot measure that explicitly protected abortion and contraception in California’s constitution.</p></div>
+        </article>
+        <article class="context-item">
+          <img data-cms-image="new-story-image" src="https://i0.wp.com/thedispatch.com/wp-content/uploads/2026/03/KevinKiley.jpg?w=1400&strip=all&ssl=1" alt="Placeholder photo of Rep. Kevin Kiley">
+          <div class="copy"><div class="eyebrow" data-cms="record-four-kicker">New topic</div><h3 data-cms="record-four-title">Add a headline</h3><p data-cms="record-four-copy">Add a description for this story.</p></div>
         </article>
       </div>
     </div>
