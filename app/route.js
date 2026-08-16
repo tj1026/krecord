@@ -46,6 +46,20 @@ function absoluteImage(value, origin) {
   return origin + '/score-photo.png';
 }
 
+// Serialize the published content for the <script type="application/json">
+// block the page reads on load. The browser doesn't parse entities inside a
+// script element, so the one thing that must not survive is a literal "<":
+// a "</script>" inside the published copy would close the tag early and spill
+// the rest of the content into the document as markup.
+function inlineJson(value) {
+  return JSON.stringify(value).replace(/</g, '\\u003c');
+}
+
+function injectContent(html, content) {
+  const re = /(<script id="cms-content" type="application\/json">)[^<]*(<\/script>)/;
+  return re.test(html) ? html.replace(re, (m, a, b) => a + inlineJson(content) + b) : html;
+}
+
 function originFrom(request) {
   const proto = request.headers.get('x-forwarded-proto') || 'https';
   const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
@@ -56,13 +70,17 @@ export async function GET(request) {
   let html = loadTemplate();
   const origin = originFrom(request);
 
-  let content = {};
+  // null means "the read failed", which is different from "there is nothing
+  // published yet" ({}). Only the failure case leaves the page to fall back to
+  // /api/content, so a storage hiccup at render time still resolves itself.
+  let published = null;
   try {
-    content = (await readContent()) || {};
+    published = (await readContent()) || {};
   } catch {
     // Storage unavailable: serve the static defaults baked into the template.
   }
 
+  const content = published || {};
   const title = content['seo-title'];
   const description = content['seo-description'];
   const pageUrl = origin ? origin + '/' : '';
@@ -80,12 +98,22 @@ export async function GET(request) {
   html = replaceLink(html, 'canonical', pageUrl);
   html = replaceLink(html, 'icon', content['favicon']);
 
+  // Ship the copy with the page. Without this every visitor also fetches
+  // /api/content to hydrate the page, which turns one traffic spike into two
+  // function calls per reader and leaves the page blank until the second one
+  // answers. With it, a cached page load costs nothing beyond the HTML.
+  html = injectContent(html, published);
+
   return new Response(html, {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      // Cache the rendered shell at the edge so a traffic spike is served from
-      // the CDN instead of hitting the database on every request.
-      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600'
+      // Cache the rendered page at the edge so a traffic spike is served from
+      // the CDN instead of hitting the database on every request. A page
+      // rendered without content (storage was down) gets a short cache so the
+      // degraded version can't stick around for the full window.
+      'Cache-Control': published
+        ? 'public, s-maxage=60, stale-while-revalidate=600'
+        : 'public, s-maxage=5'
     }
   });
 }

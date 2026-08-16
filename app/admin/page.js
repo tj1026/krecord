@@ -229,7 +229,21 @@ export default function AdminPage() {
             <div className={styles.brand}>The Kiley Record</div>
             <p>Content editor</p>
           </div>
-          <a className={styles.preview} href="/index.html" target="_blank" rel="noopener noreferrer">Open site preview ↗</a>
+          {/* The live page is cached at the edge, so a plain link can show a
+              copy from before the last publish. The timestamp gives each
+              preview its own cache entry, which always renders fresh. */}
+          <a
+            className={styles.preview}
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={event => {
+              event.preventDefault();
+              window.open('/?preview=' + Date.now(), '_blank', 'noopener');
+            }}
+          >
+            Open site preview ↗
+          </a>
         </div>
       </header>
       <main className={styles.main}>

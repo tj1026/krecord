@@ -5,6 +5,16 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/': ['./public/index.html']
   },
+  // "/index.html" is where the password gate and the admin preview link send
+  // people. Left alone it serves the raw file from public/, which has neither
+  // the published copy nor the social tags filled in — so it would still need
+  // a client-side /api/content call per visitor. beforeFiles runs ahead of the
+  // public directory, so both addresses render through the "/" handler.
+  async rewrites() {
+    return {
+      beforeFiles: [{ source: '/index.html', destination: '/' }]
+    };
+  },
   async headers() {
     const securityHeaders = [
       { key: 'X-Frame-Options', value: 'DENY' },
