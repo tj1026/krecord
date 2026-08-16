@@ -2,8 +2,35 @@ import { NextResponse } from 'next/server';
 import { readContent, writeContent } from '../../../lib/db';
 import { safeEquals } from '../../../lib/auth';
 import { clientKey, isRateLimited } from '../../../lib/rate-limit';
+import { allFields } from '../../../lib/cms-schema';
 
 export const runtime = 'nodejs';
+
+// Uploaded images are stored inline as base64 data URIs, and the published
+// content now ships inside the page itself. A serverless response can only
+// carry about 4.5 MB, so a handful of uploads would stop being a heavy page
+// and start being a homepage that returns nothing at all. Refuse the save
+// while it can still be undone, and say which field caused it.
+const MAX_CONTENT_BYTES = 2_500_000;
+const fieldLabels = new Map(allFields.map(field => [field.key, field.label]));
+
+function megabytes(bytes) {
+  return (bytes / 1_000_000).toFixed(1) + ' MB';
+}
+
+function largestField(content) {
+  let key = null;
+  let bytes = 0;
+  for (const [candidate, value] of Object.entries(content)) {
+    if (typeof value !== 'string') continue;
+    const size = Buffer.byteLength(value);
+    if (size > bytes) {
+      bytes = size;
+      key = candidate;
+    }
+  }
+  return { key, bytes };
+}
 
 export async function GET() {
   try {
@@ -38,6 +65,22 @@ export async function PUT(request) {
     if (!content || typeof content !== 'object' || Array.isArray(content)) {
       return NextResponse.json({ error: 'Content must be an object.' }, { status: 400 });
     }
+
+    const totalBytes = Buffer.byteLength(JSON.stringify(content));
+    if (totalBytes > MAX_CONTENT_BYTES) {
+      const largest = largestField(content);
+      const label = fieldLabels.get(largest.key) || largest.key;
+      return NextResponse.json(
+        {
+          error:
+            `This save is ${megabytes(totalBytes)}, over the ${megabytes(MAX_CONTENT_BYTES)} limit — publishing it would break the homepage. ` +
+            `The biggest item is “${label}” at ${megabytes(largest.bytes)}. ` +
+            'Uploaded images are stored inside the page, so use a hosted image URL for the large ones instead of uploading the file.'
+        },
+        { status: 413 }
+      );
+    }
+
     await writeContent(content);
     return NextResponse.json({ ok: true });
   } catch (error) {
