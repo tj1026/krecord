@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readContent } from '../lib/db';
+import { canonicalOrigin, isCanonicalHost } from '../lib/site';
 
 export const runtime = 'nodejs';
 
@@ -60,15 +61,12 @@ function injectContent(html, content) {
   return re.test(html) ? html.replace(re, (m, a, b) => a + inlineJson(content) + b) : html;
 }
 
-function originFrom(request) {
-  const proto = request.headers.get('x-forwarded-proto') || 'https';
-  const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
-  return host ? `${proto}://${host}` : '';
-}
-
 export async function GET(request) {
   let html = loadTemplate();
-  const origin = originFrom(request);
+  // Not the host that happened to serve this request: the address the site is
+  // published under. Otherwise the *.vercel.app deploy URL hands crawlers a
+  // canonical pointing at itself and competes with the real domain.
+  const origin = canonicalOrigin(request);
 
   // null means "the read failed", which is different from "there is nothing
   // published yet" ({}). Only the failure case leaves the page to fall back to
@@ -95,6 +93,10 @@ export async function GET(request) {
   html = replaceMeta(html, 'property', 'og:url', pageUrl);
   html = replaceMeta(html, 'property', 'og:image', image);
   html = replaceMeta(html, 'name', 'twitter:image', image);
+  html = replaceMeta(html, 'name', 'twitter:title', title);
+  html = replaceMeta(html, 'name', 'twitter:description', description);
+  html = replaceMeta(html, 'property', 'og:image:alt', content['seo-social-image-alt']);
+  html = replaceMeta(html, 'name', 'twitter:image:alt', content['seo-social-image-alt']);
   html = replaceLink(html, 'canonical', pageUrl);
   html = replaceLink(html, 'icon', content['favicon']);
 
@@ -104,16 +106,22 @@ export async function GET(request) {
   // answers. With it, a cached page load costs nothing beyond the HTML.
   html = injectContent(html, published);
 
-  return new Response(html, {
-    headers: {
-      'Content-Type': 'text/html; charset=utf-8',
-      // Cache the rendered page at the edge so a traffic spike is served from
-      // the CDN instead of hitting the database on every request. A page
-      // rendered without content (storage was down) gets a short cache so the
-      // degraded version can't stick around for the full window.
-      'Cache-Control': published
-        ? 'public, s-maxage=60, stale-while-revalidate=600'
-        : 'public, s-maxage=5'
-    }
-  });
+  const headers = {
+    'Content-Type': 'text/html; charset=utf-8',
+    // Cache the rendered page at the edge so a traffic spike is served from
+    // the CDN instead of hitting the database on every request. A page
+    // rendered without content (storage was down) gets a short cache so the
+    // degraded version can't stick around for the full window.
+    'Cache-Control': published
+      ? 'public, s-maxage=60, stale-while-revalidate=600'
+      : 'public, s-maxage=5'
+  };
+
+  // Same page, wrong address: a preview or *.vercel.app host is a duplicate of
+  // the live site, so keep it out of search results.
+  if (!isCanonicalHost(request)) {
+    headers['X-Robots-Tag'] = 'noindex, nofollow';
+  }
+
+  return new Response(html, { headers });
 }

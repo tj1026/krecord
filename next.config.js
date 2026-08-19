@@ -24,7 +24,10 @@ const nextConfig = {
     ];
     return [
       { source: '/:path*', headers: securityHeaders },
-      { source: '/admin', headers: [...securityHeaders, { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }] }
+      // The editor and the password page are part of the plumbing, not the
+      // site. Now that the front door is open, keep both out of search results.
+      { source: '/admin', headers: [...securityHeaders, { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }] },
+      { source: '/access', headers: [...securityHeaders, { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }] }
     ];
   }
 };

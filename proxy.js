@@ -25,7 +25,10 @@ async function sitePasswordEnabled() {
 }
 
 export async function proxy(request) {
-  if (!process.env.SITE_PASSWORD || unprotectedPaths.some(path => request.nextUrl.pathname === path) || request.nextUrl.pathname.startsWith('/_next/')) {
+  const pathname = request.nextUrl.pathname;
+  // /_vercel/ carries the analytics script and its beacon. Gating those would
+  // silently stop measuring traffic if the password is ever switched back on.
+  if (!process.env.SITE_PASSWORD || unprotectedPaths.some(path => pathname === path) || pathname.startsWith('/_next/') || pathname.startsWith('/_vercel/')) {
     return NextResponse.next();
   }
 
@@ -40,7 +43,7 @@ export async function proxy(request) {
   }
 
   const url = new URL('/access', request.url);
-  url.searchParams.set('next', request.nextUrl.pathname);
+  url.searchParams.set('next', pathname);
   return NextResponse.redirect(url);
 }
 
